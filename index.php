@@ -4,6 +4,22 @@ set_time_limit(0);
 
 // GET https://www.bahn.de/web/api/reiseloesung/orte?suchbegriff=m%C3%BCn&typ=ALL&limit=10
 
+function getDayOfWeek($day) {
+	
+	$weekdays = array(
+		1 => "Montag",
+		2 => "Dienstag",
+		3 => "Mittwoch",
+		4 => "Donnerstag",
+		5 => "Freitag",
+		6 => "Samstag",
+		7 => "Sonntag",
+	);
+
+	return $weekdays[$day];
+	
+}
+
 function searchBahnhof($search) {
 	
 	if ($search == "")
@@ -334,7 +350,8 @@ if (isset($_GET["start"]) && $_GET["start"] != "" && isset($_GET["ziel"]) && $_G
 		if ($data["preis"] > 0)
 			$link = "https://www.bahn.de/buchung/fahrplan/suche#sts=true&kl=".$klasse."&hd=".$data["abfahrtsZeitpunkt"]."&soid=".$start."&zoid=".$ziel."&bp=".$bestpreis_anzeigen."&d=".$direktverbindung."";
 		
-		print "<li>".$datum.": <span style='font-weight:bold; color:".$farbe.";'>".$data["preis"]."€</span><br/>";
+		$dayofweek = date("N", strtotime($datum));
+		print "<li>".$datum." (<span style='".($dayofweek >= 6 ? "font-weight:bold;" : "")."'>".getDayOfWeek($dayofweek)."</span>): <span style='font-weight:bold; color:".$farbe.";'>".$data["preis"]."€</span><br/>";
 		if ($data["preis"] > 0)		
 			print "(<a href='".$link."' target='_blank'>".$data["info"]."</a>)";
 		print "</li>";
